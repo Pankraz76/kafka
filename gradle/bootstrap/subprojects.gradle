@@ -66,6 +66,8 @@ def fineTuneEclipseClasspathFile(eclipse, project) {
 }
 
 def minClientJavaVersion = 11
+def skipSigning = project.hasProperty('skipSigning') && skipSigning.toBoolean()
+def shouldSign = !skipSigning && !version.endsWith("SNAPSHOT")
 def mavenUrl = project.hasProperty('mavenUrl') ? project.mavenUrl : ''
 def mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : ''
 def mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : ''
