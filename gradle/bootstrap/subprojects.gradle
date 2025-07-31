@@ -65,6 +65,25 @@ def fineTuneEclipseClasspathFile(eclipse, project) {
   }
 }
 
+configureJavaCompiler = { name, options, projectPath ->
+  // -parameters generates arguments with parameter names in TestInfo#getDisplayName.
+  // ref: https://github.com/junit-team/junit5/blob/4c0dddad1b96d4a20e92a2cd583954643ac56ac0/junit-jupiter-params/src/main/java/org/junit/jupiter/params/ParameterizedTest.java#L161-L164
+
+  def releaseVersion = modulesNeedingJava11.any { projectPath == it } ? minClientJavaVersion : minNonClientJavaVersion
+
+  options.compilerArgs << "-encoding" << "UTF-8"
+  options.release = releaseVersion
+
+  if (name in ["compileTestJava", "compileTestScala"]) {
+    options.compilerArgs << "-parameters"
+  } else if (name in ["compileJava", "compileScala"]) {
+    options.compilerArgs << "-Xlint:all"
+    options.compilerArgs << "-Xlint:-serial"
+    options.compilerArgs << "-Xlint:-try"
+    options.compilerArgs << "-Werror"
+  }
+}
+
 subprojects {
 
   // enable running :dependencies task recursively on all subprojects
