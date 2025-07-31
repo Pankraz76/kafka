@@ -17,6 +17,18 @@
 
 import org.ajoberstar.grgit.Grgit
 
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  apply from: "$rootDir/gradle/dependencies.gradle"
+
+  dependencies {
+    // For Apache Rat plugin to ignore non-Git files
+    classpath "org.ajoberstar.grgit:grgit-core:$versions.grgit"
+  }
+}
+
 def determineCommitId() {
   def takeFromHash = 16
   if (project.hasProperty('commitId')) {
