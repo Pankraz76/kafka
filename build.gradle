@@ -17,18 +17,6 @@
 
 import com.github.spotbugs.snom.SpotBugsTask
 
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  apply from: "$rootDir/gradle/dependencies.gradle"
-
-  dependencies {
-    // For Apache Rat plugin to ignore non-Git files
-    classpath "org.ajoberstar.grgit:grgit-core:$versions.grgit"
-  }
-}
-
 plugins {
   // active
   id "com.github.ben-manes.versions" version "0.48.0"
