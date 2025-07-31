@@ -65,15 +65,6 @@ def fineTuneEclipseClasspathFile(eclipse, project) {
   }
 }
 
-def minClientJavaVersion = 11
-def skipSigning = project.hasProperty('skipSigning') && skipSigning.toBoolean()
-def shouldSign = !skipSigning && !version.endsWith("SNAPSHOT")
-def mavenUrl = project.hasProperty('mavenUrl') ? project.mavenUrl : ''
-def mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : ''
-def mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : ''
-def minNonClientJavaVersion = 17
-def modulesNeedingJava11 = [":clients", ":generator", ":streams", ":streams:test-utils", ":streams:examples", ":streams-scala", ":test-common:test-common-util"]
-
 def configureJavaCompiler = { name, options, projectPath ->
   // -parameters generates arguments with parameter names in TestInfo#getDisplayName.
   // ref: https://github.com/junit-team/junit5/blob/4c0dddad1b96d4a20e92a2cd583954643ac56ac0/junit-jupiter-params/src/main/java/org/junit/jupiter/params/ParameterizedTest.java#L161-L164
