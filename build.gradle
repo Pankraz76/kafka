@@ -58,6 +58,9 @@ apply from: "$rootDir/gradle/project/streams.gradle"
 
 ext {
   gradleVersion = versions.gradle
+  minClientJavaVersion = 11
+  minNonClientJavaVersion = 17
+  modulesNeedingJava11 = [":clients", ":generator", ":streams", ":streams:test-utils", ":streams:examples", ":streams-scala", ":test-common:test-common-util"]
 
   buildVersionFileName = "kafka-version.properties"
 
@@ -90,6 +93,13 @@ ext {
   userMaxTestRetries = project.hasProperty('maxTestRetries') ? maxTestRetries.toInteger() : 0
   userMaxTestRetryFailures = project.hasProperty('maxTestRetryFailures') ? maxTestRetryFailures.toInteger() : 0
 
+  skipSigning = project.hasProperty('skipSigning') && skipSigning.toBoolean()
+  shouldSign = !skipSigning && !version.endsWith("SNAPSHOT")
+
+  mavenUrl = project.hasProperty('mavenUrl') ? project.mavenUrl : ''
+  mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : ''
+  mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : ''
+
   userShowStandardStreams = project.hasProperty("showStandardStreams") ? showStandardStreams : null
 
   userTestLoggingEvents = project.hasProperty("testLoggingEvents") ? Arrays.asList(testLoggingEvents.split(",")) : null
@@ -116,6 +126,25 @@ ext {
   repo = file("$rootDir/.git").isDirectory() ? Grgit.open(currentDir: project.getRootDir()) : null
 
   commitId = determineCommitId()
+
+  configureJavaCompiler = { name, options, projectPath ->
+    // -parameters generates arguments with parameter names in TestInfo#getDisplayName.
+    // ref: https://github.com/junit-team/junit5/blob/4c0dddad1b96d4a20e92a2cd583954643ac56ac0/junit-jupiter-params/src/main/java/org/junit/jupiter/params/ParameterizedTest.java#L161-L164
+
+    def releaseVersion = modulesNeedingJava11.any { projectPath == it } ? minClientJavaVersion : minNonClientJavaVersion
+
+    options.compilerArgs << "-encoding" << "UTF-8"
+    options.release = releaseVersion
+
+    if (name in ["compileTestJava", "compileTestScala"]) {
+      options.compilerArgs << "-parameters"
+    } else if (name in ["compileJava", "compileScala"]) {
+      options.compilerArgs << "-Xlint:all"
+      options.compilerArgs << "-Xlint:-serial"
+      options.compilerArgs << "-Xlint:-try"
+      options.compilerArgs << "-Werror"
+    }
+  }
 
   runtimeTestLibs = [
     libs.slf4jLog4j2,
