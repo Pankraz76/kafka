@@ -166,7 +166,7 @@ ext {
   
 }
 
-apply from: "$rootDir/gradle/bootstrap/allprojects.gradle"
+apply from: "$rootDir/gradle/allprojects.gradle"
 
 def determineCommitId() {
   def takeFromHash = 16
@@ -243,7 +243,7 @@ if (repo != null) {
 println("Starting build with version $version (commit id ${commitId == null ? "null" : commitId.take(8)}) using Gradle $gradleVersion, Java ${JavaVersion.current()} and Scala ${versions.scala}")
 println("Build properties: ignoreFailures=$userIgnoreFailures, maxParallelForks=$maxTestForks, maxScalacThreads=$maxScalacThreads, maxTestRetries=$userMaxTestRetries")
 
-apply from: "$rootDir/gradle/bootstrap/subprojects.gradle"
+apply from: "$rootDir/gradle/subprojects.gradle"
 
 gradle.taskGraph.whenReady { taskGraph ->
   taskGraph.getAllTasks().findAll { it.name.contains('spotbugsScoverage') || it.name.contains('spotbugsTest') }.each { task ->
@@ -306,9 +306,9 @@ tasks.create(name: "jarConnect", dependsOn: connectPkgs.collect { it + ":jar" })
 
 tasks.create(name: "testConnect", dependsOn: connectPkgs.collect { it + ":test" }) {}
 
-apply from: "$rootDir/gradle/project/individuals.gradle"
+apply from: "$rootDir/gradle/individuals.gradle"
 
-apply from: "$rootDir/gradle/project/streams.gradle"
+apply from: "$rootDir/gradle/streams.gradle"
 
 project(':connect:api') {
   base {
