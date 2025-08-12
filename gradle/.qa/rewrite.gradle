@@ -19,11 +19,12 @@ project.apply plugin: "org.openrewrite.rewrite"
 
 rewrite {
     activeRecipe(
-            "tech.picnic.errorprone.refasterrules.BugCheckerRulesRecipes",
+            //"tech.picnic.errorprone.refasterrules.BugCheckerRulesRecipes",
             "tech.picnic.errorprone.refasterrules.FileRulesRecipes",
-            "tech.picnic.errorprone.refasterrules.MicrometerRulesRecipes",
-            "tech.picnic.errorprone.refasterrules.SuggestedFixRulesRecipes",
-            "tech.picnic.errorprone.refasterrules.TimeRulesRecipes",
+            "org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods",
+            //"tech.picnic.errorprone.refasterrules.MicrometerRulesRecipes",
+            //"tech.picnic.errorprone.refasterrules.SuggestedFixRulesRecipes",
+            //"tech.picnic.errorprone.refasterrules.TimeRulesRecipes",
             //"org.apache.kafka.openrewrite.java.AddLicenseHeader", https://github.com/openrewrite/rewrite/issues/5762
             //"org.openrewrite.java.RemoveUnusedImports",
             //"org.openrewrite.java.migrate.UpgradeToJava17",

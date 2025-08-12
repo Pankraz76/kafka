@@ -36,8 +36,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.time.Instant;
-
 import static java.time.Instant.ofEpochMilli;
 import static org.apache.kafka.common.utils.Utils.mkEntry;
 import static org.apache.kafka.common.utils.Utils.mkMap;
@@ -103,7 +101,7 @@ public class ChangeLoggingWindowBytesStoreTest {
     @SuppressWarnings({"resource", "unused"})
     @Test
     public void shouldDelegateToUnderlyingStoreWhenFetching() {
-        try (final WindowStoreIterator<byte[]> unused = store.fetch(bytesKey, Instant.EPOCH, ofEpochMilli(10))) {
+        try (final WindowStoreIterator<byte[]> unused = store.fetch(bytesKey, ofEpochMilli(0), ofEpochMilli(10))) {
             verify(inner).fetch(bytesKey, 0, 10);
         }
     }
@@ -111,7 +109,7 @@ public class ChangeLoggingWindowBytesStoreTest {
     @SuppressWarnings({"resource", "unused"})
     @Test
     public void shouldDelegateToUnderlyingStoreWhenBackwardFetching() {
-        try (final WindowStoreIterator<byte[]> unused = store.backwardFetch(bytesKey, Instant.EPOCH, ofEpochMilli(10))) {
+        try (final WindowStoreIterator<byte[]> unused = store.backwardFetch(bytesKey, ofEpochMilli(0), ofEpochMilli(10))) {
             verify(inner).backwardFetch(bytesKey, 0, 10);
         }
     }
@@ -119,7 +117,7 @@ public class ChangeLoggingWindowBytesStoreTest {
     @SuppressWarnings({"resource", "unused"})
     @Test
     public void shouldDelegateToUnderlyingStoreWhenFetchingRange() {
-        try (final KeyValueIterator<Windowed<Bytes>, byte[]> unused = store.fetch(bytesKey, bytesKey, Instant.EPOCH, ofEpochMilli(1))) {
+        try (final KeyValueIterator<Windowed<Bytes>, byte[]> unused = store.fetch(bytesKey, bytesKey, ofEpochMilli(0), ofEpochMilli(1))) {
             verify(inner).fetch(bytesKey, bytesKey, 0, 1);
         }
     }
@@ -127,7 +125,7 @@ public class ChangeLoggingWindowBytesStoreTest {
     @SuppressWarnings({"resource", "unused"})
     @Test
     public void shouldDelegateToUnderlyingStoreWhenBackwardFetchingRange() {
-        try (final KeyValueIterator<Windowed<Bytes>, byte[]> unused =  store.backwardFetch(bytesKey, bytesKey, Instant.EPOCH, ofEpochMilli(1))) {
+        try (final KeyValueIterator<Windowed<Bytes>, byte[]> unused =  store.backwardFetch(bytesKey, bytesKey, ofEpochMilli(0), ofEpochMilli(1))) {
             verify(inner).backwardFetch(bytesKey, bytesKey, 0, 1);
         }
     }

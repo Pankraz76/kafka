@@ -26,6 +26,7 @@ import org.apache.kafka.streams.state.WindowBytesStoreSupplier;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,7 +85,7 @@ public class MaterializedTest {
     @Test
     public void shouldThrowIllegalArgumentExceptionIfRetentionIsNegative() {
         final IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-            () -> Materialized.as("valid-name").withRetention(Duration.ofDays(-1)));
+            () -> Materialized.as("valid-name").withRetention(Duration.of(-1, ChronoUnit.DAYS)));
 
         assertEquals(e.getMessage(), "Retention must not be negative.");
     }
