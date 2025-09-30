@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -177,9 +178,7 @@ public final class BrokerLocalStorage {
     private OffsetHolder getEarliestLocalOffset(TopicPartition topicPartition) {
         List<String> partitionFiles = getTopicPartitionFileNames(topicPartition);
         Optional<String> firstLogFile = partitionFiles.stream()
-                .filter(filename -> filename.endsWith(LogFileUtils.LOG_FILE_SUFFIX))
-                .sorted()
-                .findFirst();
+            .filter(filename -> filename.endsWith(LogFileUtils.LOG_FILE_SUFFIX)).min(Comparator.naturalOrder());
         if (firstLogFile.isEmpty()) {
             throw new IllegalArgumentException(String.format(
                     "[BrokerId=%d] No log file found for the topic-partition %s", brokerId, topicPartition));

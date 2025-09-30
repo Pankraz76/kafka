@@ -90,9 +90,7 @@ public class RecordTestUtils {
         } else {
             if (recordIndex == -1) {
                 return recordsAndVersions.stream().map(ApiMessageAndVersion::message)
-                    .filter(record -> record.getClass().isAssignableFrom(recordClazz))
-                    .map(recordClazz::cast)
-                    .findFirst();
+                    .filter(record -> record.getClass().isAssignableFrom(recordClazz)).findFirst().map(recordClazz::cast);
             } else {
                 ApiMessageAndVersion messageAndVersion = recordsAndVersions.get(recordIndex);
                 ApiMessage record = messageAndVersion.message();

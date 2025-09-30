@@ -480,9 +480,8 @@ public class RequestResponseTest {
 
     private int partitionSize(Map<TopicIdPartition, Integer> partitionSizes, TopicIdPartition topicIdPartition) {
         return partitionSizes.entrySet().stream()
-                .filter(tpId -> tpId.getKey().topicId() == topicIdPartition.topicId() &&
-                        tpId.getKey().partition() == topicIdPartition.partition()).map(Map.Entry::getValue)
-                .findFirst().get();
+            .filter(tpId -> tpId.getKey().topicId() == topicIdPartition.topicId() &&
+                tpId.getKey().partition() == topicIdPartition.partition()).findFirst().map(Map.Entry::getValue).get();
     }
 
     @Test

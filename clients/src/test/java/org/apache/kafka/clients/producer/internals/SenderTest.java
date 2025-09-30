@@ -199,7 +199,7 @@ public class SenderTest {
             String topicName = tpData.name();
 
             if (request.version() >= 13 && tpData.topicId() != Uuid.ZERO_UUID) {
-                topicName = TOPIC_IDS.entrySet().stream().filter(e -> e.getValue() == tpData.topicId()).map(Map.Entry::getKey).findFirst().get();
+                topicName = TOPIC_IDS.entrySet().stream().filter(e -> e.getValue() == tpData.topicId()).findFirst().map(Map.Entry::getKey).get();
             }
 
             TopicPartition tp = new TopicPartition(topicName, p.index());

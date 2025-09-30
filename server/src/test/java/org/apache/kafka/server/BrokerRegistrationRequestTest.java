@@ -136,9 +136,7 @@ class BrokerRegistrationRequestTest {
     }
 
     NodeToControllerChannelManager brokerToControllerChannelManager(ClusterInstance clusterInstance, Metrics metrics) {
-        var controllerSocketServer = clusterInstance.controllers().values().stream()
-                .map(ControllerServer::socketServer)
-                .findFirst()
+        var controllerSocketServer = clusterInstance.controllers().values().stream().findFirst().map(ControllerServer::socketServer)
                 .orElseThrow();
 
         return new NodeToControllerChannelManagerImpl(
