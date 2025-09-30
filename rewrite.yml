@@ -16,7 +16,7 @@ recipeList:
 #  - org.openrewrite.java.recipes.JavaRecipeBestPractices
 #  - org.openrewrite.java.recipes.RecipeTestingBestPractices
 #  - org.openrewrite.java.security.JavaSecurityBestPractices
-  - org.openrewrite.staticanalysis.CommonStaticAnalysis
+  #- org.openrewrite.staticanalysis.CommonStaticAnalysis
 #  - org.openrewrite.staticanalysis.EqualsAvoidsNull
 #  - org.openrewrite.staticanalysis.JavaApiBestPractices
 #  - org.openrewrite.java.migrate.util.ReplaceStreamCollectWithToList
@@ -46,6 +46,6 @@ recipeList:
 #  - tech.picnic.errorprone.refasterrules.PatternRulesRecipes
 #  - tech.picnic.errorprone.refasterrules.PreconditionsRulesRecipes
 #  - tech.picnic.errorprone.refasterrules.PrimitiveRulesRecipes
-#  - tech.picnic.errorprone.refasterrules.StreamRulesRecipes
+  - tech.picnic.errorprone.refasterrules.StreamRulesRecipes
 #  - tech.picnic.errorprone.refasterrules.TimeRulesRecipes
 ---
