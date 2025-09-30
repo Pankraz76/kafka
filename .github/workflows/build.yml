@@ -172,6 +172,8 @@ jobs:
           fi
       - name: Verify license file
         run: python committer-tools/verify_license.py --skip-build
+      - name: rewriteDryRun
+        run: ./gradlew --build-cache rewriteDryRun
 
   test:
     needs: [configure, validate, load-catalog]
