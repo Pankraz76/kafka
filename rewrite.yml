@@ -48,5 +48,6 @@ recipeList:
 #  - tech.picnic.errorprone.refasterrules.PrimitiveRulesRecipes
   - tech.picnic.errorprone.refasterrules.StreamRulesRecipes
   - org.openrewrite.gradle.EnableGradleParallelExecution
+  - org.openrewrite.gradle.EnableGradleBuildCache
 #  - tech.picnic.errorprone.refasterrules.TimeRulesRecipes
 ---
