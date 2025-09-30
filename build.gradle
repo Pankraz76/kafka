@@ -44,6 +44,8 @@ plugins {
   id 'org.openrewrite.rewrite' version '7.17.0' apply false
 }
 
+apply from: rootProject.file('gradle/rewrite.gradle')
+
 ext {
   gradleVersion = versions.gradle
   minClientJavaVersion = 11
