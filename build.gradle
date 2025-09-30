@@ -45,7 +45,6 @@ plugins {
 }
 
 apply from: rootProject.file('gradle/rewrite.gradle')
-//apply(from = "$rootDir/gradle/rewrite.gradle")
 
 ext {
   gradleVersion = versions.gradle
