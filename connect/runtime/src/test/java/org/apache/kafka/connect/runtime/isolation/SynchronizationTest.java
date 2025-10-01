@@ -56,6 +56,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class SynchronizationTest {
@@ -368,7 +369,7 @@ public class SynchronizationTest {
                 .stream(ManagementFactory.getThreadMXBean().getThreadInfo(deadlockedThreads))
                 .filter(this::threadFromCurrentTest)
                 .map(SynchronizationTest::threadInfoToString)
-                .collect(Collectors.joining(""));
+                .collect(joining());
             if (!threads.isEmpty()) {
                 fail("Found deadlocked threads while classloading\n" + threads);
             }

@@ -224,10 +224,8 @@ public class KafkaStreamsTelemetryIntegrationTest {
             final Uuid adminInstanceId = clientInstanceIds.adminInstanceId();
             
             final Uuid mainConsumerInstanceId = clientInstanceIds.consumerInstanceIds().entrySet().stream()
-                    .filter(entry -> !entry.getKey().endsWith("-restore-consumer")
-                            && !entry.getKey().endsWith("GlobalStreamThread-global-consumer"))
-                    .map(Map.Entry::getValue)
-                    .findFirst().orElseThrow();
+                .filter(entry -> !entry.getKey().endsWith("-restore-consumer")
+                    && !entry.getKey().endsWith("GlobalStreamThread-global-consumer")).findFirst().map(Map.Entry::getValue).orElseThrow();
             assertNotNull(adminInstanceId);
             assertNotNull(mainConsumerInstanceId);
             LOG.info("Main consumer instance id {}", mainConsumerInstanceId);
@@ -675,15 +673,13 @@ public class KafkaStreamsTelemetryIntegrationTest {
                 final MetricsData data = MetricsData.parseFrom(payload.data());
                 
                 final Optional<String> processIdOption = data.getResourceMetricsList()
-                        .stream()
-                        .flatMap(rm -> rm.getScopeMetricsList().stream())
-                        .flatMap(sm -> sm.getMetricsList().stream())
-                        .map(org.apache.kafka.shaded.io.opentelemetry.proto.metrics.v1.Metric::getGauge)
-                        .flatMap(gauge -> gauge.getDataPointsList().stream())
-                        .flatMap(numberDataPoint -> numberDataPoint.getAttributesList().stream())
-                        .filter(keyValue -> keyValue.getKey().equals("process_id"))
-                        .map(keyValue -> keyValue.getValue().getStringValue())
-                        .findFirst();
+                    .stream()
+                    .flatMap(rm -> rm.getScopeMetricsList().stream())
+                    .flatMap(sm -> sm.getMetricsList().stream())
+                    .map(org.apache.kafka.shaded.io.opentelemetry.proto.metrics.v1.Metric::getGauge)
+                    .flatMap(gauge -> gauge.getDataPointsList().stream())
+                    .flatMap(numberDataPoint -> numberDataPoint.getAttributesList().stream())
+                    .filter(keyValue -> keyValue.getKey().equals("process_id")).findFirst().map(keyValue -> keyValue.getValue().getStringValue());
 
                 processIdOption.ifPresent(pid -> processId = pid);
 

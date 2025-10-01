@@ -317,9 +317,7 @@ public class DeleteTopicTest {
         return () -> idToBroker.values()
             .stream()
             .filter(broker -> broker.replicaManager().onlinePartition(topicPartition)
-                .exists(tp -> tp.leaderIdIfLocal().isDefined()))
-            .map(broker -> broker.config().brokerId())
-            .findFirst();
+                .exists(tp -> tp.leaderIdIfLocal().isDefined())).findFirst().map(broker -> broker.config().brokerId());
     }
 
     private KafkaBroker findFollower(Collection<KafkaBroker> idToBroker, int leaderId) {

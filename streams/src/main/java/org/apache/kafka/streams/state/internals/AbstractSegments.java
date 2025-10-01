@@ -102,9 +102,7 @@ abstract class AbstractSegments<S extends Segment> implements Segments<S> {
                 final String[] list = dir.list();
                 if (list != null) {
                     Arrays.stream(list)
-                            .map(segment -> segmentIdFromSegmentName(segment, dir))
-                            .sorted() // open segments in the id order
-                            .filter(segmentId -> segmentId >= 0)
+                        .map(segment -> segmentIdFromSegmentName(segment, dir)).filter(segmentId -> segmentId >= 0).sorted()
                             .forEach(segmentId -> getOrCreateSegment(segmentId, context));
                 }
             } else {

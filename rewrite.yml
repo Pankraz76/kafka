@@ -9,20 +9,23 @@ tags:
   - static-analysis
   - cleanup
 recipeList:
+  - org.openrewrite.gradle.EnableGradleBuildCache
+  - org.openrewrite.gradle.EnableGradleParallelExecution
+  - tech.picnic.errorprone.refasterrules.StreamRulesRecipes
 #  - org.openrewrite.gradle.GradleBestPractices
 #  - org.openrewrite.java.RemoveUnusedImports
 #  - org.openrewrite.java.format.RemoveTrailingWhitespace
 #  - org.openrewrite.java.migrate.UpgradeToJava17
+#  - org.openrewrite.java.migrate.util.JavaUtilAPIs
+#  - org.openrewrite.java.migrate.util.MigrateInflaterDeflaterToClose
+#  - org.openrewrite.java.migrate.util.ReplaceStreamCollectWithToList
+#  - org.openrewrite.java.migrate.util.SequencedCollection
 #  - org.openrewrite.java.recipes.JavaRecipeBestPractices
 #  - org.openrewrite.java.recipes.RecipeTestingBestPractices
 #  - org.openrewrite.java.security.JavaSecurityBestPractices
-  #- org.openrewrite.staticanalysis.CommonStaticAnalysis
+#  - org.openrewrite.staticanalysis.CommonStaticAnalysis
 #  - org.openrewrite.staticanalysis.EqualsAvoidsNull
 #  - org.openrewrite.staticanalysis.JavaApiBestPractices
-#  - org.openrewrite.java.migrate.util.ReplaceStreamCollectWithToList
-#  - org.openrewrite.java.migrate.util.SequencedCollection
-#  - org.openrewrite.java.migrate.util.MigrateInflaterDeflaterToClose
-#  - org.openrewrite.java.migrate.util.JavaUtilAPIs
 #  - org.openrewrite.staticanalysis.LowercasePackage
 #  - org.openrewrite.staticanalysis.MissingOverrideAnnotation
 #  - org.openrewrite.staticanalysis.ModifierOrder
@@ -46,8 +49,5 @@ recipeList:
 #  - tech.picnic.errorprone.refasterrules.PatternRulesRecipes
 #  - tech.picnic.errorprone.refasterrules.PreconditionsRulesRecipes
 #  - tech.picnic.errorprone.refasterrules.PrimitiveRulesRecipes
-  - tech.picnic.errorprone.refasterrules.StreamRulesRecipes
-  - org.openrewrite.gradle.EnableGradleParallelExecution
-  - org.openrewrite.gradle.EnableGradleBuildCache
 #  - tech.picnic.errorprone.refasterrules.TimeRulesRecipes
 ---

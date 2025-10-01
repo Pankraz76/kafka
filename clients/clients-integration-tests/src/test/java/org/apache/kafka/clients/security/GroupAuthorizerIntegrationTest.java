@@ -89,8 +89,7 @@ public class GroupAuthorizerIntegrationTest {
 
     private Authorizer getAuthorizer(ClusterInstance clusterInstance) {
         return clusterInstance.controllers().values().stream()
-                .filter(server -> server.authorizerPlugin().isDefined())
-                .map(server -> server.authorizerPlugin().get().get()).findFirst().get();
+            .filter(server -> server.authorizerPlugin().isDefined()).findFirst().map(server -> server.authorizerPlugin().get().get()).get();
     }
 
     private void setup(ClusterInstance clusterInstance) throws InterruptedException {

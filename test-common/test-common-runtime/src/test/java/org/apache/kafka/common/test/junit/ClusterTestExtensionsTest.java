@@ -190,9 +190,9 @@ public class ClusterTestExtensionsTest {
 
     @ClusterTest(autoStart = AutoStart.NO)
     public void testNoAutoStart() {
-        Assertions.assertThrows(RuntimeException.class, () -> clusterInstance.brokers().values().stream().map(KafkaBroker::socketServer).findFirst());
+        Assertions.assertThrows(RuntimeException.class, () -> clusterInstance.brokers().values().stream().findFirst().map(KafkaBroker::socketServer));
         clusterInstance.start();
-        assertTrue(clusterInstance.brokers().values().stream().map(KafkaBroker::socketServer).findFirst().isPresent());
+        assertTrue(clusterInstance.brokers().values().stream().findFirst().map(KafkaBroker::socketServer).isPresent());
     }
 
     @ClusterTest
