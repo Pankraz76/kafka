@@ -25,12 +25,12 @@ dependencies {
 tasks.withType(JavaCompile).configureEach {
     options.errorprone {
         disableAllChecks = true // consider removal to avoid error prone error´s, following convention over configuration.
-        error('RedundantStringConversion')
+        error('RedundantStringConversion', 'UnusedMethod')
         errorproneArgs.add('-XepExcludedPaths:.*/build/generated/.*')
         if (!getenv().containsKey('CI') && getenv('IN_PLACE')?.toBoolean()) {
             errorproneArgs.addAll(
                     '-XepPatchLocation:IN_PLACE',
-                    '-XepPatchChecks:RedundantStringConversion'
+                    '-XepPatchChecks:RedundantStringConversion,UnusedMethod'
             )
         }
     }
