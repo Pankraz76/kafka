@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Check and Test
+name: Check and Test ♻️
 
 # This workflow should only be called from ci.yml which is triggered on
 # the "pull_request" event type. We should never dispatch this workflow from
@@ -33,23 +33,23 @@ on:
 jobs:
   configure:
     runs-on: ubuntu-latest
-    name: Configure Workflow
+    name: Configure Workflow 🔧
     outputs:
       is-draft: ${{ steps.check-draft-pr.outputs.is-draft }}
       test-catalog-days: ${{ steps.configure-outputs.outputs.days }}
       sha: ${{ steps.configure-outputs.outputs.sha }}
     steps:
-      - name: Env
+      - name: Env 📊
         run: printenv
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: Check for Draft PR
+      - name: Check for Draft PR 📝
         id: check-draft-pr
         if: |
           github.event_name == 'pull_request' && 
           github.event.pull_request.draft
         run: echo "is-draft=true" >> "$GITHUB_OUTPUT"
-      - name: Configure Outputs
+      - name: Configure Outputs ⚙️
         id: configure-outputs
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -63,14 +63,14 @@ jobs:
   load-catalog:
     needs: [configure]
     runs-on: ubuntu-latest
-    name: Load Test Catalog
+    name: Load Test Catalog 📚
     steps:
-      - name: Checkout main
+      - name: Checkout main 📥
         uses: actions/checkout@v5
         with:
           persist-credentials: false
 
-      - name: Checkout test-catalog
+      - name: Checkout test-catalog 📥
         uses: actions/checkout@v5
         with:
           ref: 'test-catalog'
@@ -78,7 +78,7 @@ jobs:
           fetch-depth: 100  # Needs to be large enough to ensure we can fetch N days ago
           path: test-catalog
 
-      - name: Checkout catalog at earlier date
+      - name: Checkout catalog at earlier date 📅
         if: ${{ needs.configure.outputs.test-catalog-days != '0' }}
         env:
           DAYS: ${{ needs.configure.outputs.test-catalog-days }}
@@ -89,18 +89,18 @@ jobs:
           git switch --detach $SHA
           git show --no-patch
 
-      - name: Setup Python
+      - name: Setup Python 🐍
         uses: ./.github/actions/setup-python
 
       # Prior to this step, we don't expect any errors. For the rest of this "load-catalog" job, we need to ensure
       # we do not fail as this will fail the overall workflow.
-      - name: Combine Catalog into single file
+      - name: Combine Catalog into single file 🔄
         id: combine-catalog
         continue-on-error: true
         run: |
           python .github/scripts/format-test-catalog.py --path "test-catalog/test-catalog/**/*.yaml"
 
-      - name: Archive Combined Test Catalog
+      - name: Archive Combined Test Catalog 📦
         if: steps.combine-catalog.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
@@ -111,27 +111,27 @@ jobs:
   validate:
     needs: [configure]
     runs-on: ubuntu-latest
-    name: Compile and Check (Merge Ref)
+    name: Compile and Check (Merge Ref) 🛠️
     steps:
-      - name: Env
+      - name: Env 📊
         run: printenv
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: Checkout code
+      - name: Checkout code 📥
         uses: actions/checkout@v5
         with:
           persist-credentials: false
           ref: ${{ github.sha }}  # this is the default, just being explicit.
-      - name: Setup Python
+      - name: Setup Python 🐍
         uses: ./.github/actions/setup-python
-      - name: Setup Gradle
+      - name: Setup Gradle 🐘
         uses: ./.github/actions/setup-gradle
         with:
           java-version: 25
           gradle-cache-read-only: ${{ !inputs.is-trunk }}
           gradle-cache-write-only: ${{ inputs.is-trunk }}
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
-      - name: Compile and validate
+      - name: Compile and validate 🏛️
         env:
           SCAN_ARG: ${{ inputs.is-public-fork && '--no-scan' || '--scan' }}
         # Gradle flags
@@ -139,9 +139,12 @@ jobs:
         # --info:         For now, we'll generate lots of logs while setting up the GH Actions
         # --scan:         Publish the build scan. This will only work on PRs from apache/kafka and trunk
         # --no-scan:      For public fork PRs, we won't attempt to publish the scan
-        run: |
-          ./gradlew --build-cache --info $SCAN_ARG check releaseTarGz -x test
-      - name: Archive check reports
+        run: ./gradlew --build-cache --info $SCAN_ARG check releaseTarGz -x test
+      - name: Spotless ✨
+        run: ./gradlew spotlessCheck --build-cache
+      - name: Sanity Check 🦢
+        run: ./gradlew rewriteDryRun --build-cache
+      - name: Archive check reports 📦
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -150,18 +153,18 @@ jobs:
             **/build/**/*.html
           compression-level: 9
           if-no-files-found: ignore
-      - name: Annotate checkstyle errors
+      - name: Annotate checkstyle errors 🔍
         if: failure()
         run: python .github/scripts/checkstyle.py
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
-      - name: Annotate Rat errors
+      - name: Annotate Rat errors 🚧
         if: failure()
         run: python .github/scripts/rat.py
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
-      - name: Check generated documentation
-        # Check if there are any empty files under ./site-docs/generated, If any empty files are found, print an error 
+      - name: Check generated documentation 📖
+        # Check if there are any empty files under ./site-docs/generated, If any empty files are found, print an error
         # message and list the empty files
         run: |
           tar zxvf core/build/distributions/kafka_2.13-$(./gradlew properties | grep version: | awk '{print $NF}' | head -n 1)-site-docs.tgz
@@ -170,7 +173,7 @@ jobs:
             find ./site-docs/generated -type f -exec grep -L "." {} \; >&2
             exit 1
           fi
-      - name: Verify license file
+      - name: Verify license file 📜
         run: python committer-tools/verify_license.py --skip-build
 
   test:
@@ -189,16 +192,16 @@ jobs:
             run-new: true
     env:
       job-variation: ${{ matrix.java }}-${{ matrix.run-flaky == true && 'flaky' || 'noflaky' }}-${{ matrix.run-new == true && 'new' || 'nonew' }}
-    name: JUnit tests Java ${{ matrix.java }}${{ matrix.run-flaky == true && ' (flaky)' || '' }}${{ matrix.run-new == true && ' (new)' || '' }}
+    name: JUnit tests Java ${{ matrix.java }}${{ matrix.run-flaky == true && ' (flaky)' || '' }}${{ matrix.run-new == true && ' (new)' || '' }} 🧪
     steps:
-      - name: Checkout code
+      - name: Checkout code 📥
         uses: actions/checkout@v5
         with:
           persist-credentials: false
           ref: ${{ needs.configure.outputs.sha }}
-      - name: Setup Python
+      - name: Setup Python 🐍
         uses: ./.github/actions/setup-python
-      - name: Setup Gradle
+      - name: Setup Gradle 🐘
         uses: ./.github/actions/setup-gradle
         with:
           java-version: ${{ matrix.java }}
@@ -208,14 +211,14 @@ jobs:
 
       # If the load-catalog job failed, we won't be able to download the artifact. Since we don't want this to fail
       # the overall workflow, so we'll continue here without a test catalog.
-      - name: Load Test Catalog
+      - name: Load Test Catalog 📚
         id: load-test-catalog
         uses: actions/download-artifact@v5
         continue-on-error: true
         with:
           name: combined-test-catalog
 
-      - name: JUnit Tests
+      - name: JUnit Tests 🧪
         id: junit-test
         uses: ./.github/actions/run-gradle
         with:
@@ -230,7 +233,7 @@ jobs:
           test-repeat: ${{ !inputs.is-trunk && matrix.run-new && '3' || '1' }}
           test-verbose: ${{ runner.debug == '1' }}
 
-      - name: Archive JUnit HTML reports
+      - name: Archive JUnit HTML reports 📦
         uses: actions/upload-artifact@v4
         id: archive-junit-html
         with:
@@ -240,7 +243,7 @@ jobs:
           compression-level: 9
           if-no-files-found: ignore
 
-      - name: Archive JUnit XML
+      - name: Archive JUnit XML 📦
         uses: actions/upload-artifact@v4
         with:
           name: junit-xml-${{ env.job-variation }}
@@ -249,7 +252,7 @@ jobs:
           compression-level: 9
           if-no-files-found: ignore
 
-      - name: Archive Thread Dumps
+      - name: Archive Thread Dumps 📦
         id: archive-thread-dump
         if: steps.junit-test.outputs.gradle-exitcode == '124'
         uses: actions/upload-artifact@v4
@@ -260,7 +263,7 @@ jobs:
           compression-level: 9
           if-no-files-found: ignore
 
-      - name: Parse JUnit tests
+      - name: Parse JUnit tests 📊
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
           JUNIT_REPORT_URL: ${{ steps.archive-junit-html.outputs.artifact-url }}
@@ -275,23 +278,23 @@ jobs:
   # are present, this means there was a timeout in the tests and so we will not proceed
   # with catalog creation.
   collate-test-catalog:
-    name: Collate Test Catalog
+    name: Collate Test Catalog 📊
     needs: test
     runs-on: ubuntu-latest
     outputs:
       uploaded-test-catalog: ${{ steps.archive-test-catalog.outcome == 'success' }}
     steps:
-      - name: Checkout code
+      - name: Checkout code 📥
         uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - name: Download Thread Dumps
+      - name: Download Thread Dumps 📥
         uses: actions/download-artifact@v5
         with:
           pattern: junit-thread-dumps-25-*
           path: thread-dumps
           merge-multiple: true
-      - name: Check For Thread Dump
+      - name: Check For Thread Dump 🔍
         id: check-for-thread-dump
         run: |
           find .
@@ -299,13 +302,13 @@ jobs:
               echo "Found 'thread-dumps' directory. Will not proceed with test catalog collation.";
               exit 1;
           fi
-      - name: Download JUnit XMLs
+      - name: Download JUnit XMLs 📥
         uses: actions/download-artifact@v5
         with:
           pattern: junit-xml-25-*  # Only look at JDK 25 tests for the test catalog
           path: junit-xml
           merge-multiple: true
-      - name: Collate Test Catalog
+      - name: Collate Test Catalog 🔄
         continue-on-error: true
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
@@ -314,7 +317,7 @@ jobs:
           python .github/scripts/junit.py \
            --path junit-xml \
            --export-test-catalog ./test-catalog >> $GITHUB_STEP_SUMMARY
-      - name: Archive Test Catalog
+      - name: Archive Test Catalog 📦
         id: archive-test-catalog
         uses: actions/upload-artifact@v4
         with:
@@ -326,27 +329,27 @@ jobs:
   # This job downloads the test catalog from the previous job and overlays it on the test-catalog branch.
   # This will only run on trunk and only if the collate job did not detect a timeout.
   update-test-catalog:
-    name: Update Test Catalog
+    name: Update Test Catalog 🔄
     needs: collate-test-catalog
     if: ${{ inputs.is-trunk && needs.collate-test-catalog.outputs.uploaded-test-catalog == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout Test Catalog
+      - name: Checkout Test Catalog 📥
         uses: actions/checkout@v5
         with:
           persist-credentials: true  # Needed to commit and push later
           ref: test-catalog
-      - name: Reset Catalog
+      - name: Reset Catalog 🔄
         run: |
           rm -rf test-catalog
-      - name: Download Test Catalog
+      - name: Download Test Catalog 📥
         uses: actions/download-artifact@v5
         with:
           name: test-catalog
           path: test-catalog
-      - name: Push Test Catalog
+      - name: Push Test Catalog 📤
         # Git user.name and user.email come from https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
         env:
           COMMIT_MSG: |
@@ -364,21 +367,21 @@ jobs:
           git push
 
   checks-complete:
-    name: "CI checks completed"
+    name: CI checks completed ✅
     needs: [configure, validate, test]
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Env
+      - name: Env 📊
         run: printenv
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: Fail if Draft
+      - name: Fail if Draft ❌
         if: ${{ needs.configure.outputs.is-draft }}
         run: |
           echo "Cannot merge a draft PR"
           exit 1
-      - name: Check Dependency Outcomes
+      - name: Check Dependency Outcomes ✅
         run: |
           if [[ "${{ needs.validate.result }}" == "success" && "${{ needs.test.result }}" == "success" ]]; then
             echo "Required jobs completed successfully!"
