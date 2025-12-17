@@ -1,0 +1,15 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.apache.kafka.openrewrite.SanityCheck
+displayName: Apply all common best practices
+description: Comprehensive code quality recipe combining modernization, security, and best practices.
+recipeList:
+  - org.openrewrite.staticanalysis.NoDoubleBraceInitialization
+# - org.openrewrite.staticanalysis.CommonStaticAnalysis # composition for -> NoDoubleBraceInitialization
+# - org.openrewrite.staticanalysis.EqualsAvoidsNull
+# - tech.picnic.errorprone.refasterrules.EqualityRulesRecipes
+# - tech.picnic.errorprone.refasterrules.NullRulesRecipes
+# - tech.picnic.errorprone.refasterrules.StreamRulesRecipes
+# - tech.picnic.errorprone.refasterrules.StringRulesRecipes
+# - tech.picnic.errorprone.refasterrules.TimeRulesRecipes
+---
